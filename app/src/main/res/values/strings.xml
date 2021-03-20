@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">InventoryApp</string>
+    <string name="item_image">item image</string>
+    <string name="add_new_item">add new item</string>
+    <string name="name_of_product">Name of product</string>
+    <string name="price">Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="save">Save</string>
+    <string name="delete_all_items">Delete all items</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="has_deleted">Item deleted</string>
+    <string name="has_not_deleted">Item has not deleted</string>
+    <string name="saved">Item saved</string>
+    <string name="has_not_saved">Item has not saved</string>
+</resources>
