@@ -1,7 +1,6 @@
 package com.example.android.inventoryapp;
 
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "item_table")
@@ -23,13 +22,6 @@ public class Item {
         this.price = price;
         this.quantity = quantity;
         this.image = image;
-    }
-
-    @Ignore
-    public Item(String title, String price, String quantity) {
-        this.title = title;
-        this.price = price;
-        this.quantity = quantity;
     }
 
     public void setId(int id) {
@@ -54,9 +46,5 @@ public class Item {
 
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 }

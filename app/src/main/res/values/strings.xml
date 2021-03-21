@@ -14,4 +14,5 @@
     <string name="has_not_deleted">Item has not deleted</string>
     <string name="saved">Item saved</string>
     <string name="has_not_saved">Item has not saved</string>
+    <string name="add_photo">Add photo</string>
 </resources>
