@@ -57,7 +57,7 @@ public class AddEditItemActivity extends AppCompatActivity {
         editTextNameOfProduct = findViewById(R.id.edit_text_name);
         editTextPrice = findViewById(R.id.price);
         quantity = findViewById(R.id.quantity);
-        imageViewImage = findViewById(R.id.image_view);
+        imageViewImage = findViewById(R.id.imageView);
         button = findViewById(R.id.button);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
