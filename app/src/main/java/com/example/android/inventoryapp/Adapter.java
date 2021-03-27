@@ -7,8 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -34,20 +32,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         Item currentItem = items.get(position);
         holder.textView_title.setText(currentItem.getTitle());
-        holder.textView_description.setText(currentItem.getPrice());
-        holder.textView_priority.setText(String.valueOf(currentItem.getQuantity()));
+        holder.textView_price.setText(String.valueOf(currentItem.getPrice()));
+        holder.textView_quantity.setText(String.valueOf(currentItem.getQuantity()));
 
         String image = currentItem.getImage();
-        if (image != null) {
-            Glide.with(holder.imageView_image.getContext())
-                    .load(image)
-                    .into(holder.imageView_image);
-        }
-        else {
-            Glide.with(holder.imageView_image.getContext())
-                    .load(R.drawable.image_no)
-                    .into(holder.imageView_image);
-        }
+
+        Glide.with(holder.imageView_image.getContext())
+                .load(image)
+                .into(holder.imageView_image);
     }
 
     @Override
@@ -66,15 +58,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
 
     class Holder extends ViewHolder {
         private TextView textView_title;
-        private TextView textView_description;
-        private TextView textView_priority;
+        private TextView textView_price;
+        private TextView textView_quantity;
         private ImageView imageView_image;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
             textView_title = itemView.findViewById(R.id.text_view_title);
-            textView_description = itemView.findViewById(R.id.text_view_description);
-            textView_priority = itemView.findViewById(R.id.text_view_priority);
+            textView_price = itemView.findViewById(R.id.text_view_description);
+            textView_quantity = itemView.findViewById(R.id.text_view_priority);
             imageView_image = itemView.findViewById(R.id.image_view);
 
             itemView.setOnClickListener(v -> {

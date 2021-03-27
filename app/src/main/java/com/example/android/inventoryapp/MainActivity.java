@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        final Adapter adapter = new Adapter();
+        Adapter adapter = new Adapter();
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(ViewModel.class);
@@ -90,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == ADD_ITEM_REQUEST && resultCode == RESULT_OK) {
 
             String name = data.getStringExtra(AddEditItemActivity.EXTRA_NAME);
-            String price = data.getStringExtra(AddEditItemActivity.EXTRA_PRICE);
-            String quantity = data.getStringExtra(AddEditItemActivity.EXTRA_QUANTITY);
+            int price = data.getIntExtra(AddEditItemActivity.EXTRA_PRICE, 1);
+            int quantity = data.getIntExtra(AddEditItemActivity.EXTRA_QUANTITY, 1);
             String image = data.getStringExtra(AddEditItemActivity.EXTRA_IMAGE);
 
             Item item = new Item(name, price, quantity, image);
@@ -108,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String name = data.getStringExtra(AddEditItemActivity.EXTRA_NAME);
-            String price = data.getStringExtra(AddEditItemActivity.EXTRA_PRICE);
-            String quantity = data.getStringExtra(AddEditItemActivity.EXTRA_QUANTITY);
+            int price = data.getIntExtra(AddEditItemActivity.EXTRA_PRICE, 1);
+            int quantity = data.getIntExtra(AddEditItemActivity.EXTRA_QUANTITY, 1);
             String image = data.getStringExtra(AddEditItemActivity.EXTRA_IMAGE);
 
             Item item = new Item(name, price, quantity, image);
@@ -129,18 +130,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_all_items:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.are_you_sure)
-                        .setPositiveButton(R.string.delete, (dialog, id) -> viewModel.deleteAllItems())
-                        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
-                builder.create().show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.delete_all_items) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(R.string.are_you_sure)
+                    .setPositiveButton(R.string.delete, (dialog, id) -> viewModel.deleteAllItems())
+                    .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
+            builder.create().show();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

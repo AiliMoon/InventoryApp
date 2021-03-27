@@ -11,13 +11,13 @@ public class Item {
 
     private String title;
 
-    private String price;
+    private int price;
 
-    private String quantity;
+    private int quantity;
 
     private String image;
 
-    public Item(String title, String price, String quantity, String image) {
+    public Item(String title, int price, int quantity, String image) {
         this.title = title;
         this.price = price;
         this.quantity = quantity;
@@ -36,11 +36,11 @@ public class Item {
         return title;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 

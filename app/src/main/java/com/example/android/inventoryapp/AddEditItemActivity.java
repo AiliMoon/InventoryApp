@@ -1,6 +1,7 @@
 package com.example.android.inventoryapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -14,7 +15,7 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -34,15 +35,19 @@ public class AddEditItemActivity extends AppCompatActivity {
     public static final String EXTRA_QUANTITY = "com.example.android.inventoryapp.EXTRA_QUANTITY";
     public static final String EXTRA_IMAGE = "com.example.android.inventoryapp.EXTRA_IMAGE";
 
+    public static final int REQUEST_TAKE_IMAGE = 1;
+
     private EditText editTextNameOfProduct;
     private EditText editTextPrice;
-    private EditText priorityQuantity;
-    private ImageView image;
+    private EditText quantity;
+    private ImageView imageViewImage;
     private String imagePath;
+    private Button button;
 
     File imageFile = null;
-
-    public static final int REQUEST_TAKE_PHOTO = 1;
+    File directory;
+    Uri imageUri;
+    private Bitmap bitmapImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,44 +56,69 @@ public class AddEditItemActivity extends AppCompatActivity {
 
         editTextNameOfProduct = findViewById(R.id.edit_text_name);
         editTextPrice = findViewById(R.id.price);
-        priorityQuantity = findViewById(R.id.quantity);
-        image = findViewById(R.id.image_view);
+        quantity = findViewById(R.id.quantity);
+        imageViewImage = findViewById(R.id.image_view);
+        button = findViewById(R.id.button);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-
-        if (intent.hasExtra(EXTRA_ID)) {
+        if(intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Item");
             editTextNameOfProduct.setText(intent.getStringExtra(EXTRA_NAME));
-            editTextPrice.setText(intent.getStringExtra(EXTRA_PRICE));
-            priorityQuantity.setText(intent.getStringExtra(EXTRA_QUANTITY));
+            editTextPrice.setText(String.valueOf(intent.getIntExtra(EXTRA_PRICE, 1)));
+            quantity.setText(String.valueOf(intent.getIntExtra(EXTRA_QUANTITY, 1)));
 
             imagePath = intent.getStringExtra(EXTRA_IMAGE);
             Bitmap map = BitmapFactory.decodeFile(imagePath);
-            image.setImageBitmap(map);
+            imageViewImage.setImageBitmap(map);
         } else {
             setTitle("Add Item");
         }
+
+        button.setOnClickListener(v -> {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                try {
+                    imageFile = getImageFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (imageFile != null) {
+                    imageUri = FileProvider.getUriForFile(this,
+                            "com.example.android.fileProvider", imageFile);
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                }
+                startActivityForResult(cameraIntent, REQUEST_TAKE_IMAGE);
+            }
+        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_IMAGE && resultCode == RESULT_OK) {
+            Glide.with(this).load(imageFile.getAbsolutePath()).into(imageViewImage);
+        }
+    }
 
-    private void saveItem() {
+    public void saveItem() {
         String name = editTextNameOfProduct.getText().toString();
-        String price = editTextPrice.getText().toString();
-        String quantity = priorityQuantity.getText().toString();
-
-        if(name.trim().isEmpty() || price.trim().isEmpty() || quantity.trim().isEmpty()) {
-            Toast.makeText(this, "Please fill all empty fields", Toast.LENGTH_SHORT).show();
+        if (name.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert name of the product", Toast.LENGTH_SHORT).show();
             return;
         }
+        String price = editTextPrice.getText().toString();
+        String quantityOfItems = quantity.getText().toString();
 
-        String image = imagePath;
+        String image = imageUri.toString();
 
         Intent data = new Intent();
         data.putExtra(EXTRA_NAME, name);
         data.putExtra(EXTRA_PRICE, price);
-        data.putExtra(EXTRA_QUANTITY, quantity);
+        data.putExtra(EXTRA_QUANTITY, quantityOfItems);
         data.putExtra(EXTRA_IMAGE, image);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
@@ -98,33 +128,6 @@ public class AddEditItemActivity extends AppCompatActivity {
 
         setResult(RESULT_OK, data);
         finish();
-    }
-
-    public void setImage(View view) {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            try {
-                imageFile = getImageFile();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-            if (imageFile != null) {
-                Uri imageUri = FileProvider.getUriForFile(this, "com.example.android.fileProvider", imageFile);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                Glide.with(this).load(imageFile).into(image);
-                startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
-
-    private File getImageFile() throws IOException {
-        String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String name = "JPEG_" + time + "_";
-        File directory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        File imageFile = File.createTempFile(name, ".jpg", directory);
-        imagePath = imageFile.getAbsolutePath();
-        return imageFile;
     }
 
     @Override
@@ -143,5 +146,15 @@ public class AddEditItemActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private File getImageFile() throws IOException {
+        String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String name = "jpg_" + time + "_";
+        directory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        imageFile = File.createTempFile(name, ".jpg", directory);
+        imagePath = imageFile.getAbsolutePath();
+        return imageFile;
     }
 }
