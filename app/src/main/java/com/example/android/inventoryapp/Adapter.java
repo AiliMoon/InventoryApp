@@ -37,9 +37,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder>{
 
         String image = currentItem.getImage();
 
-        Glide.with(holder.imageView_image.getContext())
-                .load(image)
-                .into(holder.imageView_image);
+        if (image != null) {
+            Glide.with(holder.imageView_image.getContext())
+                    .load(image)
+                    .into(holder.imageView_image);
+        }
+        else {
+            Glide.with(holder.imageView_image.getContext())
+                    .load(R.drawable.image_no)
+                    .into(holder.imageView_image);
+        }
     }
 
     @Override

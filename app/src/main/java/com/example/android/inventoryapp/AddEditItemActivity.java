@@ -106,12 +106,27 @@ public class AddEditItemActivity extends AppCompatActivity {
 
     public void saveItem() {
         String name = editTextNameOfProduct.getText().toString();
-        if (name.trim().isEmpty()) {
-            Toast.makeText(this, "Please insert name of the product", Toast.LENGTH_SHORT).show();
+
+        if(name.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert a name of the product", Toast.LENGTH_SHORT).show();
             return;
         }
-        String price = editTextPrice.getText().toString();
-        String quantityOfItems = quantity.getText().toString();
+
+        int price;
+        try {
+            price = Integer.parseInt(editTextPrice.getText().toString());
+        }catch (NumberFormatException e){
+            Toast.makeText(this, "Please insert price of the product", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int quantityOfItems;
+        try {
+            quantityOfItems = Integer.parseInt(quantity.getText().toString());
+        }catch (NumberFormatException e){
+            Toast.makeText(this, "Please insert quantity of the product", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String image = imageUri.toString();
 
