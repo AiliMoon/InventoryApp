@@ -1,4 +1,4 @@
-package com.example.android.inventoryapp;
+package com.example.android.inventoryapp.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

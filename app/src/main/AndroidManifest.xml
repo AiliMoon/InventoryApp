@@ -16,10 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryApp">
-        <activity android:name=".AddEditItemActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".AddEdit.AddEditItemActivity"
+            android:parentActivityName=".Main.MainActivity">
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".Main.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

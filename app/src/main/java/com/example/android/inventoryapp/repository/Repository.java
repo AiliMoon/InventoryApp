@@ -1,9 +1,13 @@
-package com.example.android.inventoryapp;
+package com.example.android.inventoryapp.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+
+import com.example.android.inventoryapp.data.Item;
+import com.example.android.inventoryapp.data.ItemDao;
+import com.example.android.inventoryapp.data.ItemDataBase;
 
 import java.util.List;
 

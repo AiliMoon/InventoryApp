@@ -1,4 +1,4 @@
-package com.example.android.inventoryapp;
+package com.example.android.inventoryapp.Main;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +19,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.android.inventoryapp.AddEdit.AddEditItemActivity;
+import com.example.android.inventoryapp.R;
+import com.example.android.inventoryapp.adapter.Adapter;
+import com.example.android.inventoryapp.data.Item;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
+public class    MainActivity extends AppCompatActivity {
 
     public static final int ADD_ITEM_REQUEST = 1;
     public static final int EDIt_ITEM_REQUEST = 2;
 
-    private ViewModel viewModel;
+    private MainPresenter presenter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -47,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         Adapter adapter = new Adapter();
         recyclerView.setAdapter(adapter);
 
-        viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(ViewModel.class);
-        viewModel.getAllItems().observe(this, adapter::setItems);
+        presenter = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(MainPresenter.class);
+        presenter.getAllItems().observe(this, adapter::setItems);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                 alertDialog.setMessage(R.string.are_you_sure);
                 alertDialog.setPositiveButton(R.string.delete, (dialog, which) -> {
-                    viewModel.delete(adapter.getItemAt(viewHolder.getAdapterPosition()));
+                    presenter.delete(adapter.getItemAt(viewHolder.getAdapterPosition()));
                     Toast.makeText(MainActivity.this, R.string.has_deleted, Toast.LENGTH_SHORT).show();
                 });
                 alertDialog.setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             String image = data.getStringExtra(AddEditItemActivity.EXTRA_IMAGE);
 
             Item item = new Item(name, price, quantity, image);
-            viewModel.insert(item);
+            presenter.insert(item);
 
             Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
         } else if (requestCode == EDIt_ITEM_REQUEST && resultCode == RESULT_OK) {
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
             Item item = new Item(name, price, quantity, image);
             item.setId(id);
-            viewModel.update(item);
+            presenter.update(item);
 
             Toast.makeText(this, "Item updated", Toast.LENGTH_SHORT).show();
         } else {
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.delete_all_items) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage(R.string.are_you_sure)
-                    .setPositiveButton(R.string.delete, (dialog, id) -> viewModel.deleteAllItems())
+                    .setPositiveButton(R.string.delete, (dialog, id) -> presenter.deleteAllItems())
                     .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
             builder.create().show();
             return true;

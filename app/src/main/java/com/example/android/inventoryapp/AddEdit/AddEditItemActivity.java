@@ -1,9 +1,10 @@
-package com.example.android.inventoryapp;
+package com.example.android.inventoryapp.AddEdit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,13 +22,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.android.inventoryapp.R;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AddEditItemActivity extends AppCompatActivity {
+public class AddEditItemActivity extends AppCompatActivity implements AddEditContract.View {
 
     public static final String EXTRA_ID = "com.example.android.inventoryapp.EXTRA_ID";
     public static final String EXTRA_NAME = "com.example.android.inventoryapp.EXTRA_NAME";
@@ -44,10 +46,11 @@ public class AddEditItemActivity extends AppCompatActivity {
     private String imagePath;
     private Button button;
 
+    private AddEditPresenter presenter;
+
     File imageFile = null;
     File directory;
     Uri imageUri;
-    private Bitmap bitmapImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class AddEditItemActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        presenter = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(AddEditPresenter.class);
 
         Intent intent = getIntent();
         if(intent.hasExtra(EXTRA_ID)) {
@@ -104,6 +109,13 @@ public class AddEditItemActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
     public void saveItem() {
         String name = editTextNameOfProduct.getText().toString();
 
